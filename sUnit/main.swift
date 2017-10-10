@@ -1,4 +1,8 @@
-class WasRun {
+class TestCase {
+    
+}
+
+class WasRun: TestCase {
     
     let testName: String
     let testClosure: ((WasRun) -> () -> ())
