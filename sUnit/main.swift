@@ -1,12 +1,17 @@
 class WasRun {
     
+    let testName: String
+    let testClosure: ((WasRun) -> () -> ())
+    
     var wasRun = false
     
-    init(_ testName: String) {
+    init(_ testName: String, _ testClosure: @escaping ((WasRun) -> () -> ())) {
+        self.testName = testName
+        self.testClosure = testClosure
     }
     
     func run() {
-        testMethod()
+        testClosure(self)()
     }
     
     func testMethod() {
@@ -14,7 +19,7 @@ class WasRun {
     }
 }
 
-let test = WasRun("testMethod")
+let test = WasRun("testMethod", WasRun.testMethod)
 print(test.wasRun)
 test.run()
 print(test.wasRun)
