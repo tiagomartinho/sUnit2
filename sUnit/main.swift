@@ -31,7 +31,13 @@ func test<T: TestCase>(_ testFunc: @escaping (T) -> () -> Void) -> (TestCase) ->
     }
 }
 
-let testToRun = WasRun("testMethod", test(WasRun.testMethod))
-print(testToRun.wasRun)
-testToRun.run()
-print(testToRun.wasRun)
+class TestCaseTest: TestCase {
+    func testRunning() {
+        let testToRun = WasRun("testMethod", test(WasRun.testMethod))
+        assert(!testToRun.wasRun)
+        testToRun.run()
+        assert(testToRun.wasRun)
+    }
+}
+
+TestCaseTest("testRunning", test(TestCaseTest.testRunning)).run()
