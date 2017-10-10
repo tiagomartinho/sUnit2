@@ -1,12 +1,15 @@
-//
-//  main.swift
-//  sUnit
-//
-//  Created by Tiago Martinho on 10/10/17.
-//  Copyright © 2017 Tiago Martinho. All rights reserved.
-//
+class WasRun {
+    
+    let wasRun = false
+    
+    init(_ testName: String) {
+    }
+    
+    func testMethod() {
+    }
+}
 
-import Foundation
-
-print("Hello, World!")
-
+let test = WasRun("testMethod")
+print(test.wasRun)
+test.testMethod()
+print(test.wasRun)
