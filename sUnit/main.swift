@@ -1,11 +1,12 @@
 class WasRun {
     
-    let wasRun = false
+    var wasRun = false
     
     init(_ testName: String) {
     }
     
     func testMethod() {
+        wasRun = true
     }
 }
 
