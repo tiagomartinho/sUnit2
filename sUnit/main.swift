@@ -14,6 +14,10 @@ class TestCase {
     func run() {
         setUp()
         testClosure(self)
+        tearDown()
+    }
+    
+    func tearDown() {
     }
 }
 
@@ -22,7 +26,11 @@ class WasRun: TestCase {
     var log = ""
     
     override func setUp() {
-        log = "setUp "
+        log += "setUp "
+    }
+    
+    override func tearDown() {
+        log += "tearDown "
     }
     
     func testMethod() {
@@ -41,15 +49,10 @@ func test<T: TestCase>(_ testFunc: @escaping (T) -> () -> Void) -> (TestCase) ->
 
 class TestCaseTest: TestCase {
     
-    var testToRun: WasRun!
-    
-    override func setUp() {
-        testToRun = WasRun("testMethod", test(WasRun.testMethod))
-    }
-    
     func testTemplateMethod() {
+        let testToRun = WasRun("testMethod", test(WasRun.testMethod))
         testToRun.run()
-        assert("setUp testMethod " == testToRun.log)
+        assert("setUp testMethod tearDown " == testToRun.log)
     }
 }
 
