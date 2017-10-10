@@ -42,15 +42,18 @@ func test<T: TestCase>(_ testFunc: @escaping (T) -> () -> Void) -> (TestCase) ->
 
 class TestCaseTest: TestCase {
     
+    var testToRun: WasRun!
+    
+    override func setUp() {
+        testToRun = WasRun("testMethod", test(WasRun.testMethod))
+    }
+    
     func testRunning() {
-        let testToRun = WasRun("testMethod", test(WasRun.testMethod))
-        assert(!testToRun.wasRun)
         testToRun.run()
         assert(testToRun.wasRun)
     }
     
     func testSetUp() {
-        let testToRun = WasRun("testMethod", test(WasRun.testMethod))
         testToRun.run()
         assert(testToRun.wasSetUp)
     }
