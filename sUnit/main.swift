@@ -5,6 +5,10 @@ class WasRun {
     init(_ testName: String) {
     }
     
+    func run() {
+        testMethod()
+    }
+    
     func testMethod() {
         wasRun = true
     }
@@ -12,5 +16,5 @@ class WasRun {
 
 let test = WasRun("testMethod")
 print(test.wasRun)
-test.testMethod()
+test.run()
 print(test.wasRun)
