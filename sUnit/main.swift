@@ -1,15 +1,18 @@
+typealias TestClosure = (TestCase) throws -> Void
+
 class TestCase {
     
-    let testName: String
-    let testClosure: (TestCase) -> Void
+    let testClosure: TestClosure
     
-    init(_ testName: String, _ testClosure: @escaping (TestCase) -> Void) {
-        self.testName = testName
+    init(_ testClosure: @escaping TestClosure) {
         self.testClosure = testClosure
     }
     
     func run() {
-        testClosure(self)
+        do {
+            try testClosure(self)
+        } catch {
+        }
     }
 }
 
@@ -22,21 +25,21 @@ class WasRun: TestCase {
     }
 }
 
-func test<T: TestCase>(_ testFunc: @escaping (T) -> () -> Void) -> (TestCase) -> Void {
+private func test<T: TestCase>(_ testFunc: @escaping (T) -> () throws -> Void) -> TestClosure {
     return { testCaseType in
         guard let testCase = testCaseType as? T else {
             fatalError("Attempt to invoke test on class \(T.self) with incompatible instance type \(type(of: testCaseType))")
         }
-        testFunc(testCase)()
+        try testFunc(testCase)()
     }
 }
 
 class TestCaseTest: TestCase {
     func testTemplateMethod() {
-        let testToRun = WasRun("testMethod", test(WasRun.testMethod))
+        let testToRun = WasRun(test(WasRun.testMethod))
         _ = testToRun.run()
         assert("testMethod" == testToRun.log)
     }
 }
 
-TestCaseTest("testTemplateMethod", test(TestCaseTest.testTemplateMethod)).run()
+TestCaseTest(test(TestCaseTest.testTemplateMethod)).run()
