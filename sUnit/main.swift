@@ -1,3 +1,7 @@
+struct TestResult {
+    let summary: String
+}
+
 class TestCase {
     
     let testName: String
@@ -8,17 +12,16 @@ class TestCase {
         self.testClosure = testClosure
     }
     
-    func setUp() {
-    }
-    
-    func run() {
+    func run() -> TestResult {
         setUp()
         testClosure(self)
         tearDown()
+        return TestResult(summary: "1 run, 0 failed")
     }
     
-    func tearDown() {
-    }
+    func setUp() {}
+    
+    func tearDown() {}
 }
 
 class WasRun: TestCase {
@@ -51,9 +54,16 @@ class TestCaseTest: TestCase {
     
     func testTemplateMethod() {
         let testToRun = WasRun("testMethod", test(WasRun.testMethod))
-        testToRun.run()
+        _ = testToRun.run()
         assert("setUp testMethod tearDown " == testToRun.log)
+    }
+    
+    func testResult() {
+        let testToRun = WasRun("testMethod", test(WasRun.testMethod))
+        let result = testToRun.run()
+        assert("1 run, 0 failed" == result.summary)
     }
 }
 
-TestCaseTest("testTemplateMethod", test(TestCaseTest.testTemplateMethod)).run()
+_ = TestCaseTest("testTemplateMethod", test(TestCaseTest.testTemplateMethod)).run()
+_ = TestCaseTest("testResult", test(TestCaseTest.testResult)).run()
