@@ -1,29 +1,37 @@
 class TestCase {
     
-}
-
-class WasRun: TestCase {
-    
     let testName: String
-    let testClosure: ((WasRun) -> () -> ())
+    let testClosure: (TestCase) -> Void
     
-    var wasRun = false
-    
-    init(_ testName: String, _ testClosure: @escaping ((WasRun) -> () -> ())) {
+    init(_ testName: String, _ testClosure: @escaping (TestCase) -> Void) {
         self.testName = testName
         self.testClosure = testClosure
     }
     
     func run() {
-        testClosure(self)()
+        testClosure(self)
     }
+}
+
+class WasRun: TestCase {
+    
+    var wasRun = false
     
     func testMethod() {
         wasRun = true
     }
 }
 
-let test = WasRun("testMethod", WasRun.testMethod)
-print(test.wasRun)
-test.run()
-print(test.wasRun)
+func test<T: TestCase>(_ testFunc: @escaping (T) -> () -> Void) -> (TestCase) -> Void {
+    return { testCaseType in
+        guard let testCase = testCaseType as? T else {
+            fatalError("Attempt to invoke test on class \(T.self) with incompatible instance type \(type(of: testCaseType))")
+        }
+        testFunc(testCase)()
+    }
+}
+
+let testToRun = WasRun("testMethod", test(WasRun.testMethod))
+print(testToRun.wasRun)
+testToRun.run()
+print(testToRun.wasRun)
