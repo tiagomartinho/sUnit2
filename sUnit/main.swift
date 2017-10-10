@@ -8,14 +8,23 @@ class TestCase {
         self.testClosure = testClosure
     }
     
+    func setUp() {
+    }
+    
     func run() {
+        setUp()
         testClosure(self)
     }
 }
 
 class WasRun: TestCase {
     
+    var wasSetUp = false
     var wasRun = false
+    
+    override func setUp() {
+        wasSetUp = true
+    }
     
     func testMethod() {
         wasRun = true
@@ -32,12 +41,20 @@ func test<T: TestCase>(_ testFunc: @escaping (T) -> () -> Void) -> (TestCase) ->
 }
 
 class TestCaseTest: TestCase {
+    
     func testRunning() {
         let testToRun = WasRun("testMethod", test(WasRun.testMethod))
         assert(!testToRun.wasRun)
         testToRun.run()
         assert(testToRun.wasRun)
     }
+    
+    func testSetUp() {
+        let testToRun = WasRun("testMethod", test(WasRun.testMethod))
+        testToRun.run()
+        assert(testToRun.wasSetUp)
+    }
 }
 
 TestCaseTest("testRunning", test(TestCaseTest.testRunning)).run()
+TestCaseTest("testSetUp", test(TestCaseTest.testSetUp)).run()
