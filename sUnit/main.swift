@@ -19,15 +19,14 @@ class TestCase {
 
 class WasRun: TestCase {
     
-    var wasSetUp = false
-    var wasRun = false
+    var log = ""
     
     override func setUp() {
-        wasSetUp = true
+        log = "setUp "
     }
     
     func testMethod() {
-        wasRun = true
+        log += "testMethod "
     }
 }
 
@@ -48,16 +47,10 @@ class TestCaseTest: TestCase {
         testToRun = WasRun("testMethod", test(WasRun.testMethod))
     }
     
-    func testRunning() {
+    func testTemplateMethod() {
         testToRun.run()
-        assert(testToRun.wasRun)
-    }
-    
-    func testSetUp() {
-        testToRun.run()
-        assert(testToRun.wasSetUp)
+        assert("setUp testMethod " == testToRun.log)
     }
 }
 
-TestCaseTest("testRunning", test(TestCaseTest.testRunning)).run()
-TestCaseTest("testSetUp", test(TestCaseTest.testSetUp)).run()
+TestCaseTest("testTemplateMethod", test(TestCaseTest.testTemplateMethod)).run()
