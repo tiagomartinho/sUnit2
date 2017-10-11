@@ -1,45 +1,37 @@
-typealias TestClosure = (TestCase) throws -> Void
-
-class TestCase {
-    
-    let testClosure: TestClosure
-    
-    init(_ testClosure: @escaping TestClosure) {
-        self.testClosure = testClosure
-    }
-    
-    func run() {
-        do {
-            try testClosure(self)
-        } catch {
-        }
-    }
-}
-
-class WasRun: TestCase {
+class TestContinueAfterFailure: TestCase {
     
     var log = ""
     
-    func testMethod() {
-        log += "testMethod"
+    func testContinueAfterFailure() {
+        log = ""
+        continueAfterFailure = true
+        log += "first "
+        Assert(false)
+        log += "second"
     }
-}
-
-private func test<T: TestCase>(_ testFunc: @escaping (T) -> () throws -> Void) -> TestClosure {
-    return { testCaseType in
-        guard let testCase = testCaseType as? T else {
-            fatalError("Attempt to invoke test on class \(T.self) with incompatible instance type \(type(of: testCaseType))")
-        }
-        try testFunc(testCase)()
+    
+    func testDoesNotContinueAfterFailure() {
+        log = ""
+        continueAfterFailure = false
+        log += "first "
+        Assert(false)
+        log += "second"
     }
 }
 
 class TestCaseTest: TestCase {
-    func testTemplateMethod() {
-        let testToRun = WasRun(test(WasRun.testMethod))
+    func testContinueAfterFailureMethod() {
+        let testToRun = TestContinueAfterFailure(test(TestContinueAfterFailure.testContinueAfterFailure))
         _ = testToRun.run()
-        assert("testMethod" == testToRun.log)
+        assert("first second" == testToRun.log)
+    }
+    
+    func testDoesNotContinueAfterFailureMethod() {
+        let testToRun = TestContinueAfterFailure(test(TestContinueAfterFailure.testDoesNotContinueAfterFailure))
+        _ = testToRun.run()
+        assert("first" == testToRun.log)
     }
 }
 
-TestCaseTest(test(TestCaseTest.testTemplateMethod)).run()
+TestCaseTest(test(TestCaseTest.testContinueAfterFailureMethod)).run()
+TestCaseTest(test(TestCaseTest.testDoesNotContinueAfterFailureMethod)).run()
