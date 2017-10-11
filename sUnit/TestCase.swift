@@ -22,6 +22,9 @@ class TestCase {
     }
     
     func recordFailure() {
+        if !continueAfterFailure {
+            fatalError("Terminating execution due to test failure")
+        }
     }
 }
 
