@@ -8,8 +8,8 @@ enum AssertionResult {
     case unexpectedFailure(Swift.Error)
 }
 
-func Assert(_ expression: @autoclosure () throws -> Bool) {
-    EvaluateAssertion(.`true`) {
+func Assert(_ expression: @autoclosure () throws -> Bool) throws {
+    try EvaluateAssertion(.`true`) {
         let value = try expression()
         if value {
             return .success
@@ -19,7 +19,7 @@ func Assert(_ expression: @autoclosure () throws -> Bool) {
     }
 }
 
-func EvaluateAssertion(_ assertion: Assertion, expression: () throws -> AssertionResult) {
+func EvaluateAssertion(_ assertion: Assertion, expression: () throws -> AssertionResult) throws {
     let result: AssertionResult
     do {
         result = try expression()
@@ -31,7 +31,7 @@ func EvaluateAssertion(_ assertion: Assertion, expression: () throws -> Assertio
         return
     default:
         if let currentTestCase = CurrentTestCase {
-            currentTestCase.recordFailure()
+            try currentTestCase.recordFailure()
         }
     }
 }

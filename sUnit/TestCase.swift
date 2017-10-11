@@ -21,10 +21,14 @@ class TestCase {
         CurrentTestCase = nil
     }
     
-    func recordFailure() {
+    func recordFailure() throws {
         if !continueAfterFailure {
-            fatalError("Terminating execution due to test failure")
+            throw InterruptMe.continueAfterFailure
         }
+    }
+    
+    enum InterruptMe: Error {
+        case continueAfterFailure
     }
 }
 

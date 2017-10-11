@@ -2,19 +2,19 @@ class TestContinueAfterFailure: TestCase {
     
     var log = ""
     
-    func testContinueAfterFailure() {
+    func testContinueAfterFailure() throws {
         log = ""
         continueAfterFailure = true
         log += "first "
-        Assert(false)
+        try Assert(false)
         log += "second"
     }
     
-    func testDoesNotContinueAfterFailure() {
+    func testDoesNotContinueAfterFailure() throws {
         log = ""
         continueAfterFailure = false
         log += "first "
-        Assert(false)
+        try Assert(false)
         log += "second"
     }
 }
@@ -29,7 +29,7 @@ class TestCaseTest: TestCase {
     func testDoesNotContinueAfterFailureMethod() {
         let testToRun = TestContinueAfterFailure(test(TestContinueAfterFailure.testDoesNotContinueAfterFailure))
         _ = testToRun.run()
-        assert("first" == testToRun.log)
+        assert("first " == testToRun.log)
     }
 }
 
